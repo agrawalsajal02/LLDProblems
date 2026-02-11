@@ -1,0 +1,7 @@
+package designpattern.facade;
+
+public enum GameState {
+    IN_PROGRESS,
+    WON,
+    DRAW
+}
