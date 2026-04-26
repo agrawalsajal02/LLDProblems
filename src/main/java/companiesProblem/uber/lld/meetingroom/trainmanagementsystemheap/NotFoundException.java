@@ -1,0 +1,7 @@
+package companiesProblem.uber.lld.meetingroom.trainmanagementsystemheap;
+
+public final class NotFoundException extends RuntimeException {
+    public NotFoundException(String message) {
+        super(message);
+    }
+}

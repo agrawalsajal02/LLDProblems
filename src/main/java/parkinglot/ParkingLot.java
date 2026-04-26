@@ -32,7 +32,6 @@ public class ParkingLot {
         long entryTime = System.currentTimeMillis();
         Ticket ticket = new Ticket(ticketId, spot.getId(), vehicleType, entryTime);
         activeTickets.put(ticketId, ticket);
-
         return ticket;
     }
 
@@ -67,9 +66,12 @@ public class ParkingLot {
     }
 
     private SpotType mapVehicleTypeToSpotType(VehicleType vehicleType) {
-        if (vehicleType == VehicleType.MOTORCYCLE) return SpotType.MOTORCYCLE;
-        if (vehicleType == VehicleType.CAR) return SpotType.CAR;
-        if (vehicleType == VehicleType.LARGE) return SpotType.LARGE;
+        if (vehicleType == VehicleType.MOTORCYCLE)
+            return SpotType.MOTORCYCLE;
+        if (vehicleType == VehicleType.CAR)
+            return SpotType.CAR;
+        if (vehicleType == VehicleType.LARGE)
+            return SpotType.LARGE;
         throw new RuntimeException("Unknown vehicle type");
     }
 

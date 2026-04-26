@@ -1,6 +1,7 @@
 package filesystem;
 
 import java.util.List;
+import java.util.Comparator;
 
 public class FileSystem {
     private final Folder root;
@@ -13,6 +14,7 @@ public class FileSystem {
         if ("/".equals(path)) {
             throw new InvalidPathException("Cannot create file at root");
         }
+        validateCreatablePath(path);
         Folder parent = resolveParent(path);
         String name = extractName(path);
 
@@ -29,6 +31,7 @@ public class FileSystem {
         if ("/".equals(path)) {
             throw new AlreadyExistsException("Root already exists");
         }
+        validateCreatablePath(path);
         Folder parent = resolveParent(path);
         String name = extractName(path);
 
@@ -41,25 +44,28 @@ public class FileSystem {
         return folder;
     }
 
-    public FileSystemEntry get(String path) {
+    public FileSystemNode get(String path) {
         return resolvePath(path);
     }
 
-    public List<FileSystemEntry> list(String path) {
-        FileSystemEntry entry = resolvePath(path);
+    public List<FileSystemNode> list(String path) {
+        FileSystemNode entry = resolvePath(path);
         if (!entry.isDirectory()) {
             throw new NotADirectoryException("Not a directory: " + path);
         }
-        return ((Folder) entry).getChildren();
+        List<FileSystemNode> children = ((Folder) entry).getChildren();
+        children.sort(Comparator.comparing(FileSystemNode::getName));
+        return children;
     }
 
     public void delete(String path) {
         if ("/".equals(path)) {
             throw new InvalidPathException("Cannot delete root");
         }
+        validateAbsolutePath(path);
         Folder parent = resolveParent(path);
         String name = extractName(path);
-        FileSystemEntry removed = parent.removeChild(name);
+        FileSystemNode removed = parent.removeChild(name);
         if (removed == null) {
             throw new NotFoundException("Entry not found: " + path);
         }
@@ -69,12 +75,17 @@ public class FileSystem {
         if ("/".equals(path)) {
             throw new InvalidPathException("Cannot rename root");
         }
+        validateAbsolutePath(path);
         if (newName == null || newName.isEmpty() || newName.contains("/")) {
             throw new InvalidPathException("Invalid name");
         }
 
         Folder parent = resolveParent(path);
         String oldName = extractName(path);
+
+        if (oldName.equals(newName)) {
+            return;
+        }
 
         if (!parent.hasChild(oldName)) {
             throw new NotFoundException("Entry not found: " + path);
@@ -84,7 +95,7 @@ public class FileSystem {
         }
 
         // Map key oldName hai, isliye remove + rename + add karna zaroori hai.
-        FileSystemEntry entry = parent.removeChild(oldName);
+        FileSystemNode entry = parent.removeChild(oldName);
         entry.setName(newName);
         parent.addChild(entry);
     }
@@ -93,10 +104,12 @@ public class FileSystem {
         if ("/".equals(srcPath)) {
             throw new InvalidPathException("Cannot move root");
         }
+        validateAbsolutePath(srcPath);
+        validateCreatablePath(destPath);
 
         Folder srcParent = resolveParent(srcPath);
         String srcName = extractName(srcPath);
-        FileSystemEntry entry = srcParent.getChild(srcName);
+        FileSystemNode entry = srcParent.getChild(srcName);
         if (entry == null) {
             throw new NotFoundException("Source not found: " + srcPath);
         }
@@ -124,20 +137,15 @@ public class FileSystem {
         destParent.addChild(entry);
     }
 
-    private FileSystemEntry resolvePath(String path) {
-        if (path == null || path.isEmpty()) {
-            throw new InvalidPathException("Invalid path");
-        }
-        if (!path.startsWith("/")) {
-            throw new InvalidPathException("Path must be absolute");
-        }
+    private FileSystemNode resolvePath(String path) {
+        validateAbsolutePath(path);
         if ("/".equals(path)) {
             return root;
         }
 
         // Absolute path ko parts me tod ke root se traverse karte hain.
         String[] parts = path.substring(1).split("/");
-        FileSystemEntry current = root;
+        FileSystemNode current = root;
 
         for (String part : parts) {
             if (part.isEmpty()) {
@@ -147,7 +155,7 @@ public class FileSystem {
                 throw new NotADirectoryException("Not a directory in path: " + part);
             }
             Folder folder = (Folder) current;
-            FileSystemEntry child = folder.getChild(part);
+            FileSystemNode child = folder.getChild(part);
             if (child == null) {
                 throw new NotFoundException("Path not found: " + path);
             }
@@ -161,10 +169,11 @@ public class FileSystem {
         if ("/".equals(path)) {
             throw new InvalidPathException("Root has no parent");
         }
+        validateAbsolutePath(path);
         int lastSlash = path.lastIndexOf('/');
         String parentPath = (lastSlash == 0) ? "/" : path.substring(0, lastSlash);
         // Parent ko resolve karke ensure karte hain ki wo folder hi ho.
-        FileSystemEntry parent = resolvePath(parentPath);
+        FileSystemNode parent = resolvePath(parentPath);
         if (!parent.isDirectory()) {
             throw new NotADirectoryException("Parent is not a directory: " + parentPath);
         }
@@ -174,5 +183,28 @@ public class FileSystem {
     private String extractName(String path) {
         int lastSlash = path.lastIndexOf('/');
         return path.substring(lastSlash + 1);
+    }
+
+    private void validateCreatablePath(String path) {
+        validateAbsolutePath(path);
+        String name = extractName(path);
+        if (name.isEmpty()) {
+            throw new InvalidPathException("Path must not end with /");
+        }
+    }
+
+    private void validateAbsolutePath(String path) {
+        if (path == null || path.isEmpty()) {
+            throw new InvalidPathException("Invalid path");
+        }
+        if (!path.startsWith("/")) {
+            throw new InvalidPathException("Path must be absolute");
+        }
+        if (path.length() > 1 && path.endsWith("/")) {
+            throw new InvalidPathException("Path must not end with /");
+        }
+        if (path.contains("//")) {
+            throw new InvalidPathException("Invalid path: consecutive slashes");
+        }
     }
 }

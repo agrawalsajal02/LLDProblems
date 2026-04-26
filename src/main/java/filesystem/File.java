@@ -1,6 +1,6 @@
 package filesystem;
 
-public class File extends FileSystemEntry {
+public class File extends FileSystemNode {
     private String content;
 
     public File(String name, String content) {
@@ -17,7 +17,12 @@ public class File extends FileSystemEntry {
     }
 
     @Override
-    public boolean isDirectory() {
-        return false;
+    boolean isFile() {
+        return true;
+    }
+
+    @Override
+    public void display(int depth) {
+        System.out.println("  ".repeat(Math.max(0, depth)) + "- " + getName());
     }
 }

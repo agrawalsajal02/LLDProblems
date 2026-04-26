@@ -68,14 +68,15 @@ public class ElevatorController {
                 continue;
             }
 
-            boolean isMovingToward =
-                (direction == Direction.UP && e.getCurrentFloor() <= floor) ||
-                (direction == Direction.DOWN && e.getCurrentFloor() >= floor);
+            boolean isMovingToward = (direction == Direction.UP && e.getCurrentFloor() <= floor) ||
+                    (direction == Direction.DOWN && e.getCurrentFloor() >= floor);
 
             if (!isMovingToward) {
                 continue;
             }
 
+            // “Kya elevator ke request list me aisa stop hai jo is direction me future me
+            // aayega?”
             if (!e.hasRequestsAtOrBeyond(floor, direction)) {
                 continue;
             }

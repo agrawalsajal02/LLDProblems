@@ -1,5 +1,7 @@
 package amazonlocker;
 
+import java.util.UUID;
+
 public final class LockerMain {
     public static void main(String[] args) {
         Compartment[] compartments = new Compartment[] {
@@ -11,6 +13,7 @@ public final class LockerMain {
         Locker locker = new Locker(compartments);
         String code = locker.depositPackage(Size.MEDIUM);
         System.out.println("Access code: " + code);
+
 
         locker.pickup(code);
     }

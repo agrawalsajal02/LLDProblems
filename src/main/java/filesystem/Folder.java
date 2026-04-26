@@ -2,32 +2,27 @@ package filesystem;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class Folder extends FileSystemEntry {
-    private final Map<String, FileSystemEntry> children;
-
+public class Folder extends FileSystemNode {
     public Folder(String name) {
         super(name);
-        this.children = new HashMap<>();
     }
 
     @Override
-    public boolean isDirectory() {
-        return true;
+    boolean isFile() {
+        return false;
     }
 
     public boolean hasChild(String name) {
         return children.containsKey(name);
     }
 
-    public FileSystemEntry getChild(String name) {
+    public FileSystemNode getChild(String name) {
         return children.get(name);
     }
 
-    public boolean addChild(FileSystemEntry entry) {
+    public boolean addChild(FileSystemNode entry) {
         if (entry == null) {
             return false;
         }
@@ -39,16 +34,24 @@ public class Folder extends FileSystemEntry {
         return true;
     }
 
-    public FileSystemEntry removeChild(String name) {
-        FileSystemEntry removed = children.remove(name);
+    public FileSystemNode removeChild(String name) {
+        FileSystemNode removed = children.remove(name);
         if (removed != null) {
             removed.setParent(null);
         }
         return removed;
     }
 
-    public List<FileSystemEntry> getChildren() {
-        Collection<FileSystemEntry> values = children.values();
+    public List<FileSystemNode> getChildren() {
+        Collection<FileSystemNode> values = children.values();
         return new ArrayList<>(values);
+    }
+
+    @Override
+    public void display(int depth) {
+        System.out.println("  ".repeat(Math.max(0, depth)) + "+ " + getName());
+        for (FileSystemNode child : getChildren()) {
+            child.display(depth + 1);
+        }
     }
 }

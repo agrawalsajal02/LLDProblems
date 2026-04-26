@@ -25,11 +25,17 @@ public class Elevator {
     }
 
     public void step() {
+
+        // Agar koi request hi nahi hai
+        // → elevator IDLE ho jata hai aur return.
         if (requests.isEmpty()) {
             direction = Direction.IDLE;
             return;
         }
 
+        // Agar elevator IDLE hai aur requests hain
+        // → nearest request dhundo
+        // → uski taraf direction set karo (UP ya DOWN).
         if (direction == Direction.IDLE) {
             Request nearest = null;
             int minDistance = Integer.MAX_VALUE;
@@ -37,7 +43,7 @@ public class Elevator {
             for (Request req : requests) {
                 int distance = Math.abs(req.getFloor() - currentFloor);
                 if (distance < minDistance ||
-                    (distance == minDistance && (nearest == null || req.getFloor() < nearest.getFloor()))) {
+                        (distance == minDistance && (nearest == null || req.getFloor() < nearest.getFloor()))) {
                     minDistance = distance;
                     nearest = req;
                 }
@@ -45,6 +51,13 @@ public class Elevator {
 
             direction = (nearest.getFloor() > currentFloor) ? Direction.UP : Direction.DOWN;
         }
+
+        // Agar current floor par stop karna hai
+        // (pickup type match ya destination match)
+        // → request remove karo
+        // → agar ab koi request nahi बची → IDLE
+        // → warna agar aage wali direction me koi request nahi → direction reverse
+        // → return (is tick me move nahi karega).
 
         RequestType pickupType = (direction == Direction.UP) ? RequestType.PICKUP_UP : RequestType.PICKUP_DOWN;
         Request pickupRequest = new Request(currentFloor, pickupType);
@@ -64,11 +77,16 @@ public class Elevator {
             return;
         }
 
+        // Agar current direction me aage koi request nahi hai
+        // → direction reverse karo aur return.
         if (!hasRequestsAhead(direction)) {
             direction = (direction == Direction.UP) ? Direction.DOWN : Direction.UP;
             return;
         }
 
+        // Otherwise move one floor
+        // → direction UP ho to floor++
+        // → direction DOWN ho to floor--
         if (direction == Direction.UP) {
             currentFloor++;
         } else if (direction == Direction.DOWN) {

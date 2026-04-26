@@ -71,9 +71,12 @@ public class PerTypePricingParkingLot {
     }
 
     private SpotType mapVehicleTypeToSpotType(VehicleType vehicleType) {
-        if (vehicleType == VehicleType.MOTORCYCLE) return SpotType.MOTORCYCLE;
-        if (vehicleType == VehicleType.CAR) return SpotType.CAR;
-        if (vehicleType == VehicleType.LARGE) return SpotType.LARGE;
+        if (vehicleType == VehicleType.MOTORCYCLE)
+            return SpotType.MOTORCYCLE;
+        if (vehicleType == VehicleType.CAR)
+            return SpotType.CAR;
+        if (vehicleType == VehicleType.LARGE)
+            return SpotType.LARGE;
         throw new RuntimeException("Unknown vehicle type");
     }
 
@@ -81,6 +84,9 @@ public class PerTypePricingParkingLot {
         long durationMs = exitTimeMs - entryTimeMs;
         long hourMs = 1000L * 60L * 60L;
         long hours = durationMs / hourMs;
+
+        // if there’s any leftover minutes/seconds beyond full hours, charge one extra
+        // hour.
         if (durationMs % hourMs > 0) {
             hours++;
         }
