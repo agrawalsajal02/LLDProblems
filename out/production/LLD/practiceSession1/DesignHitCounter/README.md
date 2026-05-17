@@ -1,3 +1,18 @@
+Notes
+Record Hit Counter
+
+Read about the Instant use
+Try to use 1,2,3, timestamp instead of using actual epoch time and divide by 1000 to convert from mills to second to have aggregation logic
+
+computeIfAbsent , stores in map as well and work for non list as well
+UrlHitWindow hitWindow = keyToWindow.computeIfAbsent(key, ignored -> new UrlHitWindow());
+synchronized keyword apne aap mein ek lock ki tarah kaam karta hai.
+Jab bhi koi thread synchronized method ke andar jata hai, toh Java automatically pichle saare CPU caches ko flush kar deta hai (jise "happens-before" relationship kehte hain).
+Iska matlab hai ki synchronized humko visibility aur atomicity dono de deta hai, jabki volatile sirf visibility deta hai (atomicity nahi).
+
+PeekLast vs PollLast
+
+
 # Design Hit Counter
 
 This package contains a simple in-memory hit counter for tracking hits per URL in the last 5 minutes.

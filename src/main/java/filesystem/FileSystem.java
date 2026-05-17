@@ -5,9 +5,11 @@ import java.util.Comparator;
 
 public class FileSystem {
     private final Folder root;
+    private Folder currentDirectory;
 
     public FileSystem() {
         this.root = new Folder("/");
+        this.currentDirectory = root;
     }
 
     public File createFile(String path, String content) {
@@ -121,6 +123,13 @@ public class FileSystem {
             throw new AlreadyExistsException("Destination already exists: " + destPath);
         }
 
+
+//        if (entry.isDirectory()) {
+//            if (destPath.equals(srcPath) || destPath.startsWith(srcPath + "/")) {
+//                throw new InvalidPathException("Cannot move folder into itself or its descendant!");
+//            }
+//        }
+
         if (entry.isDirectory()) {
             // Cycle avoid: parent chain me agar entry mil gaya, to move invalid hai.
             Folder current = destParent;
@@ -137,7 +146,9 @@ public class FileSystem {
         destParent.addChild(entry);
     }
 
+    // return the end node (file or folder)
     private FileSystemNode resolvePath(String path) {
+        //only root is allowed to end as /. All other valid paths should end with an actual entry name, which can be a folder name or a file name.
         validateAbsolutePath(path);
         if ("/".equals(path)) {
             return root;
@@ -151,6 +162,8 @@ public class FileSystem {
             if (part.isEmpty()) {
                 throw new InvalidPathException("Invalid path: consecutive slashes");
             }
+
+            // verify if the previous current is not file ///home/file.txt/docs
             if (!current.isDirectory()) {
                 throw new NotADirectoryException("Not a directory in path: " + part);
             }
@@ -171,6 +184,7 @@ public class FileSystem {
         }
         validateAbsolutePath(path);
         int lastSlash = path.lastIndexOf('/');
+        //For /home, lastIndexOf('/') is 0.
         String parentPath = (lastSlash == 0) ? "/" : path.substring(0, lastSlash);
         // Parent ko resolve karke ensure karte hain ki wo folder hi ho.
         FileSystemNode parent = resolvePath(parentPath);
@@ -206,5 +220,81 @@ public class FileSystem {
         if (path.contains("//")) {
             throw new InvalidPathException("Invalid path: consecutive slashes");
         }
+    }
+
+    boolean mkdir(String dirname) {
+        if (dirname == null || dirname.isEmpty() || dirname.contains("/") || dirname.contains("*")) {
+            return false;
+        }
+
+        if (currentDirectory.hasChild(dirname)) {
+            return false;
+        }
+
+        Folder folder = new Folder(dirname);
+        return currentDirectory.addChild(folder);
+    }
+
+    String pwd() {
+        return currentDirectory.getPath();
+    }
+
+    private String[] normalize(String path) {
+        if (path == null || path.isEmpty()) {
+            return new String[0];
+        }
+
+        if ("/".equals(path)) {
+            return new String[0];
+        }
+
+        String normalized = path.startsWith("/") ? path.substring(1) : path;
+        return normalized.split("/");
+    }
+
+    boolean cd(String path) {
+        Folder start = path.startsWith("/") ? root : currentDirectory;
+        String[] parts = normalize(path);
+        Folder result = resolveWithWildcard(start, parts, 0);
+        if (result == null) return false;
+        currentDirectory = result;
+        return true;
+    }
+
+    Folder resolveWithWildcard(Folder curr, String[] parts, int i) {
+        if (i == parts.length) return curr;
+
+        String part = parts[i];
+
+        if (part.equals(".") || part.isEmpty()) {
+            return resolveWithWildcard(curr, parts, i + 1);
+        }
+
+        if (part.equals("..")) {
+            Folder next = curr.getParent() == null ? curr : curr.getParent();
+            return resolveWithWildcard(next, parts, i + 1);
+        }
+
+        if (part.equals("*")) {
+            Folder ans = resolveWithWildcard(curr, parts, i + 1);
+            if (ans != null) return ans;
+
+            if (curr.getParent() != null) {
+                ans = resolveWithWildcard(curr.getParent(), parts, i + 1);
+                if (ans != null) return ans;
+            }
+
+            for (FileSystemNode child : curr.getChildren()) {
+                if (child.isDirectory()) {
+                    ans = resolveWithWildcard((Folder) child, parts, i + 1);
+                    if (ans != null) return ans;
+                }
+            }
+            return null;
+        }
+
+        FileSystemNode child = curr.getChild(part);
+        if (child == null || !child.isDirectory()) return null;
+        return resolveWithWildcard((Folder) child, parts, i + 1);
     }
 }

@@ -1,3 +1,19 @@
+Parking Lot
+
+Extensibility:
+Basic: single entry , single exit and one floor parking
+
+
+1. Multi parking floors
+2. Multi entry
+3. Different pricing strategies.
+
+Ticket generation time par bhi , we can remove the spot , but we can remove the slot after payment as well
+When the ticket is created : at the time of entry only , so that it will have the start time
+
+In parking lot, you need to create list of active tickets
+
+
 # Parking Lot LLD - Memory Guide
 
 Focus on remembering **flow** not code.

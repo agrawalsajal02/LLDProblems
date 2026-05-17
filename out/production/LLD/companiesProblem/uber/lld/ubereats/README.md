@@ -1,5 +1,19 @@
 # Uber Eats Cart & Pricing Engine
 
+// The scoping is not there where prices is fetched, it is already fetched from catalog service and this programs starts after that.
+I am not designing the catalog service here.
+I am assuming menu items and upgrade prices 
+are already fetched from the catalog and passed 
+into the pricing engine as trusted inputs.
+My scope starts from cart pricing, tax calculation, and final total generation.
+
+
+why doing rounding again and again, just to show 2 digit rounding to the UI, so all 
+the attributes having round for the attributes need to shown at UI
+
+// learn about bigdecimal
+
+
 ## Problem
 Design the core classes and interfaces for Uber Eats cart and pricing engine.
 

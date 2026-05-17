@@ -1,5 +1,47 @@
 # Amazon Locker LLD - Memory Guide
 
+Locker
+
+
+
+%06d vs %06f
+
+
+🔹 %06d → integers ke liye (whole numbers)
+* d = decimal integer
+* 6 = total width = 6 characters
+* 0 = left side pe zero padding
+  👉 Example:
+
+String.format("%06d", 123);
+
+
+
+
+🔹 Control karna ho toh?
+
+String.format("%06.2f", 123.45);
+
+Output:
+
+123.45
+
+Yahan:
+* .2 = 2 decimal places
+* 6 = minimum width (padding apply hoga agar chhota hua toh)
+
+
+
+
+
+Instant.now().plus(7, ChronoUnit.DAYS);
+
+
+public boolean isExpired() {
+return !Instant.now().isBefore(expiration);
+}
+
+
 This guide helps you remember **flow and logic**, not code.
 
 ## 1) Core Objects

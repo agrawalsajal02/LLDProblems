@@ -35,12 +35,25 @@ public abstract class FileSystemNode {
         this.parent = parent;
     }
 
+    // simpler
+//    public String getPath() {
+//        if (parent == null) {
+//            return "";
+//        }
+//
+//        String parentPath = parent.getPath();
+//        return parentPath + "/" + name;
+//    }
+
     public String getPath() {
         if (parent == null) {
             return name;
         }
 
         String parentPath = parent.getPath();
+
+        //parentPath = parent.getPath() means first get the full path of the parent folder.
+        // Then if that parent path is /, it means the current entry is directly under root. So for something like home, you want "/" + "home" = "/home".
         if ("/".equals(parentPath)) {
             return "/" + name;
         }
