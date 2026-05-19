@@ -65,12 +65,16 @@ public final class Topic {
      // lazy li creating subscriber worker if already not there
         subscriberWorkers.computeIfAbsent(subscriberId, ignored -> {
             // Intuition: ek subscriber ka ek worker rakho, us subscriber ka order naturally maintain hota hai.
+
+            // onle one thread just to process things sequencially , same subscriber ke messages ordered consume hon
             SubscriberWorker worker = new SubscriberWorker(this, topicSubscriber);
             Thread thread = new Thread(worker, "subscriber-worker-" + subscriberId);
             thread.setDaemon(true);
             thread.start();
             return worker;
         });
+
+
 
         // wake up the worker that slept
         subscriberWorkers.get(subscriberId).wakeUpIfNeeded();

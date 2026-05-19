@@ -12,6 +12,9 @@ public final class ParkingLotMain {
 
         ParkingLot lot = new ParkingLot(spots, 500);
         Ticket ticket = lot.enter(VehicleType.CAR);
+
+
+
         long fee = lot.exit(ticket.getId());
         System.out.println("Fee cents: " + fee);
     }

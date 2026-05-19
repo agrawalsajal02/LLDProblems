@@ -1,4 +1,7 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.RoomCandidate;
+import meetingroomSample.RoomSelectionStrategy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,8 +9,8 @@ import java.util.List;
 
 public final class MinSpillageRoomSelectionStrategy implements RoomSelectionStrategy {
     @Override
-    public List<RoomCandidate> orderCandidates(List<RoomCandidate> candidates) {
-        List<RoomCandidate> ordered = new ArrayList<>(candidates);
+    public List<meetingroomSample.RoomCandidate> orderCandidates(List<meetingroomSample.RoomCandidate> candidates) {
+        List<meetingroomSample.RoomCandidate> ordered = new ArrayList<>(candidates);
         ordered.sort(
             Comparator
                 .comparingLong(RoomCandidate::getSpillageMinutes)

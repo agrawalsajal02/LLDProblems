@@ -1,4 +1,4 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
 
 import java.time.Instant;
 

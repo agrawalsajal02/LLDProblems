@@ -1,4 +1,7 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.Meeting;
+import meetingroomSample.NotificationService;
 
 public final class ConsoleNotificationService implements NotificationService {
     @Override

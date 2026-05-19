@@ -1,4 +1,6 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.TimeInterval;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,11 +8,11 @@ import java.util.List;
 
 public final class MeetingRequest {
     private final String hostUserId;
-    private final TimeInterval interval;
+    private final meetingroomSample.TimeInterval interval;
     private final int requiredCapacity;
     private final List<String> participants;
 
-    public MeetingRequest(String hostUserId, TimeInterval interval, int requiredCapacity, List<String> participants) {
+    public MeetingRequest(String hostUserId, meetingroomSample.TimeInterval interval, int requiredCapacity, List<String> participants) {
         if (hostUserId == null || hostUserId.isEmpty()) {
             throw new IllegalArgumentException("Host user id is required");
         }

@@ -1,4 +1,6 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

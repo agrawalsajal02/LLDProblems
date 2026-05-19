@@ -36,9 +36,13 @@ public final class SubscriberWorker implements Runnable {
     }
 
     public void wakeUpIfNeeded() {
+        //synchronized is mandatory for notifyAll()This is a Java rule, not optional. If you call notifyAll()
+        // (or notify() or wait()) without holding the object's monitor lock, Java throws:IllegalMonitorStateException
+        //notifyAll() and wait() are coordination tools between threads. For them to work correctly,
+        // the thread must own the lock on that object first.
         synchronized (topicSubscriber) {
             // Intuition: publish/reset ke baad sleeping worker ko notify karo taaki woh new offset check kare.
-            topicSubscriber.notifyAll();
+            topicSubscriber.notify();
         }
     }
 }

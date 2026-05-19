@@ -1,4 +1,13 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.AuditLogger;
+import meetingroomSample.AvailableRoomView;
+import meetingroomSample.Meeting;
+import meetingroomSample.MeetingRequest;
+import meetingroomSample.NotificationService;
+import meetingroomSample.Room;
+import meetingroomSample.RoomCandidate;
+import meetingroomSample.RoomSelectionStrategy;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -6,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 public final class MeetingScheduler {
-    private final List<Room> rooms;
+    private final List<meetingroomSample.Room> rooms;
     private final RoomSelectionStrategy roomSelectionStrategy;
-    private final AuditLogger auditLogger;
+    private final meetingroomSample.AuditLogger auditLogger;
     private final NotificationService notificationService;
 
     public MeetingScheduler(
-        List<Room> rooms,
+        List<meetingroomSample.Room> rooms,
         RoomSelectionStrategy roomSelectionStrategy,
         AuditLogger auditLogger,
         NotificationService notificationService
@@ -23,12 +32,12 @@ public final class MeetingScheduler {
         this.notificationService = notificationService;
     }
 
-    public List<AvailableRoomView> findAvailableRooms(MeetingRequest request) {
-        List<RoomCandidate> candidates = findCandidates(request);
-        List<RoomCandidate> orderedCandidates = roomSelectionStrategy.orderCandidates(candidates);
+    public List<AvailableRoomView> findAvailableRooms(meetingroomSample.MeetingRequest request) {
+        List<meetingroomSample.RoomCandidate> candidates = findCandidates(request);
+        List<meetingroomSample.RoomCandidate> orderedCandidates = roomSelectionStrategy.orderCandidates(candidates);
 
         List<AvailableRoomView> result = new ArrayList<>();
-        for (RoomCandidate candidate : orderedCandidates) {
+        for (meetingroomSample.RoomCandidate candidate : orderedCandidates) {
             result.add(
                 new AvailableRoomView(
                     candidate.getRoom().getRoomId(),
@@ -40,14 +49,14 @@ public final class MeetingScheduler {
         return result;
     }
 
-    public Optional<Meeting> scheduleMeeting(MeetingRequest request) {
-        List<RoomCandidate> candidates = findCandidates(request);
+    public Optional<meetingroomSample.Meeting> scheduleMeeting(meetingroomSample.MeetingRequest request) {
+        List<meetingroomSample.RoomCandidate> candidates = findCandidates(request);
         if (candidates.isEmpty()) {
             return Optional.empty();
         }
 
-        List<RoomCandidate> orderedCandidates = roomSelectionStrategy.orderCandidates(candidates);
-        for (RoomCandidate candidate : orderedCandidates) {
+        List<meetingroomSample.RoomCandidate> orderedCandidates = roomSelectionStrategy.orderCandidates(candidates);
+        for (meetingroomSample.RoomCandidate candidate : orderedCandidates) {
             Meeting booked = candidate.getRoom().trySchedule(request);
             if (booked != null) {
                 auditLogger.log(
@@ -66,8 +75,8 @@ public final class MeetingScheduler {
         auditLogger.purgeOlderThan(retention);
     }
 
-    private List<RoomCandidate> findCandidates(MeetingRequest request) {
-        List<RoomCandidate> candidates = new ArrayList<>();
+    private List<meetingroomSample.RoomCandidate> findCandidates(MeetingRequest request) {
+        List<meetingroomSample.RoomCandidate> candidates = new ArrayList<>();
         for (Room room : rooms) {
             RoomCandidate candidate = room.inspectCandidate(request);
             if (candidate != null) {

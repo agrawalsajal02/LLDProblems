@@ -1,7 +1,7 @@
 # Meeting Room Using Instant
 
 This package is the same simple room-booking design as
-`/Users/sajalagrawal/Documents/LLD/src/main/java/companiesProblem/uber/lld/meetingroom`,
+`/Users/sajalagrawal/Documents/LLD/src/main/java/companiesProblem/uber/lld/meetingroomSample`,
 but all time calculation and storage uses `Instant`.
 
 ## Why This Version Exists

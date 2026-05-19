@@ -1,4 +1,7 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
+
+import meetingroomSample.BookingStatus;
+import meetingroomSample.TimeInterval;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package meetingroom;
+package companiesProblem.uber.lld.meetingroomSample;
 
 public final class AvailableRoomView {
     private final String roomId;
