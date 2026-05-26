@@ -1,7 +1,6 @@
-package companiesProblem.uber.lld.meetingroomSample;
-
-import meetingroomSample.Meeting;
-
-public interface NotificationService {
-    void notifyMeetingScheduled(Meeting meeting);
-}
+//package companiesProblem.uber.lld.meetingroomSample;
+//
+//
+//public interface NotificationService {
+//    void notifyMeetingScheduled(Meeting meeting);
+//}
