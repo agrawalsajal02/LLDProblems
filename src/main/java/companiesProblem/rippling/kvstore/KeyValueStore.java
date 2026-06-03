@@ -41,7 +41,10 @@ public class KeyValueStore {
 
     public String get(String key) {
         for (Txn t : txStack) {
+            // Agar kisi layer mein delete mila → return null (bas, ruk jao — wo key "chhupayi" hai)
             if (t.deletes.contains(key)) return null;                 // hidden by delete in this layer
+
+            // Agar kisi layer mein write mila → wahi value return karo
             if (t.writes.containsKey(key)) return t.writes.get(key);  // staged write in this layer
         }
         return base.get(key);                                         // committed value (or null)
@@ -52,7 +55,9 @@ public class KeyValueStore {
             base.put(key, value);                                     // no txn => write to base
         } else {
             Txn t = txStack.peek();
+            //agar pehle delete kiya tha toh wo hatao
             t.deletes.remove(key);                                    // no longer deleted
+            //current (top) txn ki layer pe likh do
             t.writes.put(key, value);                                 // stage write
         }
     }
